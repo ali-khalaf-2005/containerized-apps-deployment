@@ -1,0 +1,109 @@
+ali@client1:~/Docker-work$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND            CREATED        STATUS          PORTS     NAMES
+98875a2be424   ubuntu    "sleep infinity"   15 hours ago   Up 38 minutes             web1
+ali@client1:~/Docker-work$ docker run -dit --name api ubuntu sleep infinity
+9149fc47f82676cc19df7d21b9ef4f54c2e448414420401e866bb118e48ea5ac
+ali@client1:~/Docker-work$ docker exec -it web1 bash
+root@98875a2be424:/# ping api
+ping: api: Temporary failure in name resolution
+
+ali@client1:~/Docker-work$ docker network create --driver bridge app-net
+a11e5ba9de0372f079b0a860e6bd11d5cf1ab24970d1e30f8bbd9ced0e9d5e51
+ali@client1:~/Docker-work$ docker network connect app-net web1
+ali@client1:~/Docker-work$ docker network connect app-net api
+ali@client1:~/Docker-work$ docker network inspect app-net
+[
+    {
+        "Name": "app-net",
+        "Id": "a11e5ba9de0372f079b0a860e6bd11d5cf1ab24970d1e30f8bbd9ced0e9d5e51",
+        "Created": "2026-10-22T12:40:14.42440639+03:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.20.0.0/16",
+                    "Gateway": "172.20.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Options": {},
+        "Labels": {},
+        "Containers": {
+            "9149fc47f82676cc19df7d21b9ef4f54c2e448414420401e866bb118e48ea5ac": {
+                "Name": "api",
+                "EndpointID": "a26063634a193148b30a56637f4353d13e71304abbd08c7355e59365bf3da0b2",
+                "MacAddress": "c2:35:ac:fe:6b:da",
+                "IPv4Address": "172.20.0.3/16",
+                "IPv6Address": ""
+            },
+            "98875a2be4248fb2625b2056f98a058f26541eac1569141464a6b8dd8589642f": {
+                "Name": "web1",
+                "EndpointID": "9ad10177a78c15b0536535922f70ea7851b80a27e52526c4bb0cc2fe20f2a36b",
+                "MacAddress": "92:27:32:44:e7:72",
+                "IPv4Address": "172.20.0.2/16",
+                "IPv6Address": ""
+            }
+        },
+        "Status": {
+            "IPAM": {
+                "Subnets": {
+                    "172.20.0.0/16": {
+                        "IPsInUse": 5,
+                        "DynamicIPsAvailable": 65531
+                    }
+                }
+            }
+        }
+    }
+]
+ali@client1:~/Docker-work$ docker exec -it web1 bash
+root@98875a2be424:/# ping api
+PING api (172.20.0.3) 56(84) bytes of data.
+64 bytes from api.app-net (172.20.0.3): icmp_seq=1 ttl=64 time=0.085 ms
+64 bytes from api.app-net (172.20.0.3): icmp_seq=2 ttl=64 time=0.134 ms
+64 bytes from api.app-net (172.20.0.3): icmp_seq=3 ttl=64 time=0.145 ms
+^C
+--- api ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2027ms
+rtt min/avg/max/mdev = 0.085/0.121/0.145/0.026 ms
+root@98875a2be424:/# exit
+exit
+ali@client1:~/Docker-work$ docker network disconnect app-net api
+ali@client1:~/Docker-work$ docker exec -it web1 bash
+root@98875a2be424:/# ping api
+ping: api: Temporary failure in name resolution
+root@98875a2be424:/# exit
+exit
+ali@client1:~/Docker-work$ docker network connect app-net api
+ali@client1:~/Docker-work$ docker container stop api 
+api
+ali@client1:~/Docker-work$ docker network disconnect app-net web1
+
+ali@client1:~/Docker-work$ docker system prune
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - unused build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+9149fc47f82676cc19df7d21b9ef4f54c2e448414420401e866bb118e48ea5ac
+
+Deleted Networks:
+app-net
+
+Total reclaimed space: 4.096kB
+ali@client1:~/Docker-work$ 
