@@ -16,6 +16,9 @@ Learn how Docker containers communicate through bridge networks and how Docker's
 - Disconnected a container from the network and observed the DNS resolution failure.
 - Reconnected the container and verified communication again.
 
+![Lab Screenshot 1](Screenshot%20\(232\).png)
+![Lab Screenshot 2](Screenshot%20\(233\).png)
+
 ## Key Learnings
 - Containers need a suitable shared network to communicate.
 - User-defined bridge networks provide automatic DNS resolution by container name.
