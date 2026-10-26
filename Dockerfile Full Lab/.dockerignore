@@ -1,0 +1,12 @@
+ Git
+.git
+.gitignore
+
+*.tmp
+*.temp
+*.swp
+*.bak
+.DS_Store
+
+*.log
+logs/
