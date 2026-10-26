@@ -114,3 +114,8 @@ docker image rm dockerfile-portfolio-lab:1.0
 This project demonstrates practical experience with Docker image creation, container execution, port publishing, image versioning, and build-cache behavior.
 
 It is a learning project intended to demonstrate hands-on Docker practice.
+## Screenshot
+
+The website running inside the Docker container.
+
+![Dockerfile Portfolio Lab](website-running.png)
